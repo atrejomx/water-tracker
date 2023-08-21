@@ -1,20 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from "react-native";
+import styles from "./styles";
+import React, { useState } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MyTabBar } from "./components/MyTabBar";
+import { HomeScreen } from "./components/screens/HomeScreen";
+import { SettingsScreen } from "./components/screens/SettingsScreen";
+import { NavigationContainer } from "@react-navigation/native";
+import { CalendarScreen } from "./components/screens/CalendarScreen";
+import moment from "moment";
 
-export default function App() {
+export type RootStackParamList = {
+  Home: { date: number };
+  Calendar: undefined;
+  Settings: undefined;
+};
+
+const Tab = createBottomTabNavigator<RootStackParamList>();
+
+const App: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          initialParams={{ date: moment().valueOf() }}
+        />
+        <Tab.Screen name="Calendar" component={CalendarScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
