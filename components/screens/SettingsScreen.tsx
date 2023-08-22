@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  NativeSyntheticEvent,
-  TextInputChangeEventData,
-} from "react-native";
+import { View, Text, TextInput } from "react-native";
 import styles from "../../styles";
 import { User } from "../../interfaces/user.interface";
 import RNPickerSelect from "react-native-picker-select";
 import { validateInput } from "../../utils/validateInputs";
 import {
-  convertLToOz,
+  converLbToKg,
   getDailyWaterIntake,
 } from "../../utils/getDailyWaterIntake";
+import { useSelector } from "react-redux";
+import { RootState, store } from "../../stores";
+import { setWaterConfig } from "../../features/waterIntake.slice";
 
 export const SettingsScreen = () => {
+  const { waterConfig } = useSelector(
+    (state: RootState) => state.waterIntakeSlice
+  );
   const [values, setValues] = useState<User>({
     name: "",
     weight: 70,
@@ -26,9 +26,6 @@ export const SettingsScreen = () => {
   }>({
     weight: false,
   });
-  const [intake, setIntake] = useState<number>(
-    getDailyWaterIntake(values.weight)
-  );
 
   const handleChange = (value: string, inputName: keyof typeof values) => {
     const isValid = validateInput(inputName, value);
@@ -46,12 +43,25 @@ export const SettingsScreen = () => {
     }
 
     if (values.weightMeasure === "kg") {
-      setIntake(getDailyWaterIntake(+values.weight));
+      store.dispatch(
+        setWaterConfig({
+          waterIntake: getDailyWaterIntake(+values.weight),
+          name: values.name,
+          weight: values.weight,
+          weightMeasure: "kg",
+        })
+      );
       return;
     }
 
-    const oz = convertLToOz(getDailyWaterIntake(+values.weight));
-    setIntake(oz);
+    store.dispatch(
+      setWaterConfig({
+        waterIntake: getDailyWaterIntake(converLbToKg(+values.weight)),
+        name: values.name,
+        weight: values.weight,
+        weightMeasure: "lb",
+      })
+    );
   }, [values.weight, values.weightMeasure, invalidInputs.weight]);
 
   return (
@@ -93,21 +103,25 @@ export const SettingsScreen = () => {
                 inputAndroid: styles.input,
                 inputIOS: styles.input,
               }}
-              placeholder={"Select a metric"}
+              fixAndroidTouchableBug
+              useNativeAndroidPickerStyle
               value={values.weightMeasure}
               onValueChange={(value) => handleChange(value, "weightMeasure")}
               items={[
                 { label: "Pounds", value: "lb", key: "lb" },
                 { label: "Kilograms", value: "kg", key: "kg" },
               ]}
-              key={"Picker select"}
             />
           </View>
         </View>
       </View>
       <View style={styles.subcontainer}>
         <Text style={styles.subtitle}>You should take </Text>
-        <Text style={styles.mainText}>{intake.toFixed(2)}</Text>
+        <Text style={styles.mainText}>
+          {values.weightMeasure === "kg"
+            ? waterConfig.waterIntake.toFixed(2)
+            : converLbToKg(waterConfig.waterIntake).toFixed(2)}
+        </Text>
         <Text style={styles.subtitle}>
           {values.weightMeasure === "kg" ? "liters" : "ounces"} daily
         </Text>

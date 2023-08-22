@@ -8,9 +8,12 @@ export const colors = {
   fourh: "#FFB703",
   fifth: "#FB8500",
   text: "#f0f6f6",
-  white: "#fff",
+  white: "#ffffff",
   lightBlue: "#4dd8e6",
   turquoise: "#bbe6e4",
+  gray: "#bdbdbd",
+  green: "#558C8C",
+  red: "#E15554",
 };
 
 const styles = StyleSheet.create({
@@ -103,8 +106,16 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
   },
-  button_text: {
-    fontSize: 23,
+  disabledButton: {
+    backgroundColor: colors.gray,
+    padding: 10,
+    margin: 10,
+    borderRadius: 10,
+    color: colors.white,
+  },
+  buttonText: {
+    fontWeight: "600",
+    fontSize: 14,
     color: "#fff",
   },
 });

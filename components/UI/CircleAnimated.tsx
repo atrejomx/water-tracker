@@ -43,8 +43,7 @@ export const CircularProgressBar: React.FC<Props> = (props) => {
     percent,
     width,
     duration,
-    children,
-    ...rest
+    children
   } = props;
 
   const initialValueHalfCircle = percent >= 50 ? 0 : 180;
@@ -181,16 +180,4 @@ export const CircularProgressBar: React.FC<Props> = (props) => {
     </View>
   );
 };
-
-CircularProgressBar.propTypes = {
-  activeColor: PropTypes.string.isRequired,
-  passiveColor: PropTypes.string.isRequired,
-  baseColor: PropTypes.string.isRequired,
-  width: PropTypes.number.isRequired,
-  radius: PropTypes.number.isRequired,
-  percent: PropTypes.number.isRequired,
-  duration: PropTypes.number.isRequired,
-  children: PropTypes.element,
-};
-
 export default CircularProgressBar;

@@ -9,3 +9,7 @@ export const getDailyWaterIntake = (weightInKg: number): number => {
 };
 
 export const convertLToOz = (liters: number) => liters * 33.814;
+
+export const convertOzToL = (ounces: number) => ounces / 33.814;
+
+export const converLbToKg = (lb: number) => lb / 2.20462;
